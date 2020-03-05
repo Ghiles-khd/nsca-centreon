@@ -1,0 +1,7 @@
+# This file is used to set NSCA daemon options.
+# 
+# Options:
+#   --inetd     = Run as a service under inetd or xinetd
+#   --daemon    = Run as a standalone multi-process daemon
+#   --single    = Run as a standalone single-process daemon (default)
+OPTIONS=""

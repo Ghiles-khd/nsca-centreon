@@ -1,0 +1,74 @@
+--- init-script.in.orig	2010-07-31 13:12:55.000000000 +0200
++++ init-script.in	2010-07-31 13:28:10.000000000 +0200
+@@ -5,11 +5,11 @@
+ #  This script takes care of starting and stopping the NSCA daemon.
+ #  Modeled after init script for NRPE written by jaclu@grm.se
+ #
+-# chkconfig: 2345 80 30
++# chkconfig: - 80 20
+ # description: nsca is a daemon for accepting service check results \
+ #              from applications running on other hosts.
+ # processname: nsca
+-# config: /usr/local/nagios/etc/nsca.cfg
++# config: /etc/nagios/nsca.cfg
+ 
+ # Source function library
+ if [ -f /etc/rc.d/init.d/functions ]; then
+@@ -26,10 +26,12 @@
+ # Check that networking is up.
+ [ ${NETWORKING} = "no" ] && exit 0
+ 
+-NscaBin=@bindir@/nsca
++NscaBin=@sbindir@/nsca
+ NscaCfg=@sysconfdir@/nsca.cfg
+ LockFile=/var/lock/subsys/nsca
+ 
++RETVAL=0
++
+ # See how we were called.
+ case "$1" in
+   start)
+@@ -38,27 +40,39 @@
+ 	daemon $NscaBin -s -c $NscaCfg
+ 	RETVAL=$?
+ 	echo
+-	touch $LockFile
++	[ $RETVAL -eq 0 ] && touch $LockFile
+ 	;;
+   stop)
+ 	# Stop daemons.
+ 	echo -n "Shutting down nsca: "
+ 	killproc nsca
++	RETVAL=$?
+ 	echo
+-	rm -f $LockFile
++	[ $RETVAL -eq 0 ] && rm $LockFile
+ 	;;
+   restart)
+ 	$0 stop
+ 	$0 start
+ 	;;
++  reload)
++	echo -n $"Reloading nsca: "
++	killproc nsca -HUP
++	RETVAL=$?
++	echo
++        ;;
++  condrestart)
++        [ -e $LockFile ] && $0 restart
++        RETVAL=$?
++        ;;
+   status)
+ 	status nsca
++        RETVAL=$?
+ 	;;
+   *)
+-	echo "Usage: nsca {start|stop|restart|status}"
++	echo "Usage: nsca {start|stop|restart|reload|condrestart|status}"
+ 	exit 1
+ esac
+ 
+-exit 0
++exit $RETVAL
+ 
+ 
