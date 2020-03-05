@@ -6,7 +6,7 @@
 # description: nsca is a daemon for accepting service check results \
 #              from applications running on other hosts.
 # processname: nsca
-# config: /etc/nagios/nsca.cfg
+# config: /etc/centreon-engine/nsca.cfg
 
 # Source function library.
 . /etc/rc.d/init.d/functions
@@ -16,7 +16,7 @@
 
 exec="/usr/sbin/nsca"
 prog="nsca"
-config="/etc/nagios/nsca.cfg"
+config="/etc/centreon-engine/nsca.cfg"
 
 [ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
 

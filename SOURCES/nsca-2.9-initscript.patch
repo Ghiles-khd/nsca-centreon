@@ -10,7 +10,7 @@
  #              from applications running on other hosts.
  # processname: nsca
 -# config: /usr/local/nagios/etc/nsca.cfg
-+# config: /etc/nagios/nsca.cfg
++# config: /etc/centreon-engine/nsca.cfg
  
  # Source function library
  if [ -f /etc/rc.d/init.d/functions ]; then

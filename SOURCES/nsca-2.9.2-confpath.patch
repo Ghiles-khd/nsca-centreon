@@ -6,7 +6,7 @@ diff -Naur nsca-2.9.2.orig/src/send_nsca.c nsca-2.9.2/src/send_nsca.c
  char server_name[MAX_HOST_ADDRESS_LENGTH];
  char password[MAX_INPUT_BUFFER]="";
 -char config_file[MAX_INPUT_BUFFER]="send_nsca.cfg";
-+char config_file[MAX_INPUT_BUFFER]="/etc/nagios/send_nsca.cfg";
++char config_file[MAX_INPUT_BUFFER]="/etc/centreon-engine/send_nsca.cfg";
  char delimiter[2]="\t";
  char block_delimiter[2]=BLOCK_DELIMITER;
  

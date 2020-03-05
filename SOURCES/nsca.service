@@ -4,7 +4,7 @@ After=syslog.target network.target auditd.service
 
 [Service]
 EnvironmentFile=-/etc/sysconfig/nsca
-ExecStart=/usr/sbin/nsca $OPTIONS -c /etc/nagios/nsca.cfg
+ExecStart=/usr/sbin/nsca $OPTIONS -c /etc/centreon-engine/nsca.cfg
 ExecReload=/bin/kill -HUP $MAINPID
 Type=forking
 

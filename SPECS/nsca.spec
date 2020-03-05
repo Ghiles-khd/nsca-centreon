@@ -7,7 +7,7 @@
 Summary:        Nagios Service Check Acceptor
 Name:           nsca
 Version:        2.9.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2+
 URL:            http://www.nagios.org/
 Source0:        http://downloads.sourceforge.net/nagios/nsca-%{version}.tar.gz
@@ -29,7 +29,7 @@ Requires(preun): /sbin/service, /sbin/chkconfig
 Requires(post): /sbin/chkconfig
 Requires(postun): /sbin/service
 %endif
-Requires:       nagios
+Requires:       centreon-engine
 
 
 %description
@@ -39,7 +39,7 @@ plugins on a remote host in as transparent a manner as possible.
 
 %package client
 Summary:        Client application for sending updates to a nsca server
-Requires:       nagios-common
+Requires:       centreon-common
 
 
 %description client
@@ -51,17 +51,17 @@ Client application for sending updates to a nsca server.
 %patch0 -p0 -b .initscript
 %patch1 -p1 -b .confpath
 # Change defaults in the config file to match the nagios package
-sed -i -e "s|^command_file=.*|command_file=%{_localstatedir}/spool/nagios/cmd/nagios.cmd|" \
-       -e "s|^alternate_dump_file=.*|alternate_dump_file=%{_localstatedir}/spool/nagios/cmd/nsca.dump|" \
+sed -i -e "s|^command_file=.*|command_file=%{_localstatedir}/lib/centreon-engine/rw/centengine.cmd|" \
+       -e "s|^alternate_dump_file=.*|alternate_dump_file=%{_localstatedir}/spool/centreon/nsca.dump|" \
        sample-config/nsca.cfg.in
 
 
 %build
 %configure \
-        --sysconfdir="%{_sysconfdir}/nagios" \
-        --localstatedir="%{_localstatedir}/log/nagios" \
-        --with-nsca-user="nagios" \
-        --with-nsca-grp="nagios" \
+        --sysconfdir="%{_sysconfdir}/centreon-engine" \
+        --localstatedir="%{_localstatedir}/log/centreon-engine" \
+        --with-nsca-user="centreon-engine" \
+        --with-nsca-grp="centreon-engine" \
         --with-nsca-port="5667"
 make %{?_smp_mflags} all
 
@@ -69,8 +69,8 @@ make %{?_smp_mflags} all
 %install
 install -Dp -m 0755 src/nsca %{buildroot}%{_sbindir}/nsca
 install -Dp -m 0755 src/send_nsca %{buildroot}%{_sbindir}/send_nsca
-install -Dp -m 0644 sample-config/nsca.cfg %{buildroot}%{_sysconfdir}/nagios/nsca.cfg
-install -Dp -m 0644 sample-config/send_nsca.cfg %{buildroot}%{_sysconfdir}/nagios/send_nsca.cfg
+install -Dp -m 0644 sample-config/nsca.cfg %{buildroot}%{_sysconfdir}/centreon-engine/nsca.cfg
+install -Dp -m 0644 sample-config/send_nsca.cfg %{buildroot}%{_sysconfdir}/centreon-engine/send_nsca.cfg
 install -Dp -m 0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/sysconfig/nsca
 %if %{systemd_support}
 install -Dp -m 0644 %{SOURCE3} %{buildroot}%{_unitdir}/nsca.service
@@ -106,7 +106,7 @@ fi
 
 %files
 %doc Changelog LEGAL README SECURITY
-%attr(0600,root,root) %config(noreplace) %{_sysconfdir}/nagios/nsca.cfg
+%attr(0600,root,root) %config(noreplace) %{_sysconfdir}/centreon-engine/nsca.cfg
 %config(noreplace) %{_sysconfdir}/sysconfig/nsca
 %{_sbindir}/nsca
 %if %{systemd_support}
@@ -118,11 +118,15 @@ fi
 
 %files client
 %doc Changelog LEGAL README SECURITY
-%attr(0600,root,root) %config(noreplace) %{_sysconfdir}/nagios/send_nsca.cfg
+%attr(0600,root,root) %config(noreplace) %{_sysconfdir}/centreon-engine/send_nsca.cfg
 %{_sbindir}/send_nsca
 
 
 %changelog
+* Thu Mar 05 2020 Ghiles KHEDDACHE <ghiles.kdh@gmail.com> 2.9.2-2
+- rebuild with centreon-engine.
+- add centreon-engine configuration.
+
 * Thu Apr 13 2017 Xavier Bachelot <xavier@bachelot.org> - 2.9.2-1
 - Update to 2.9.2.
 - Clean up specfile.
